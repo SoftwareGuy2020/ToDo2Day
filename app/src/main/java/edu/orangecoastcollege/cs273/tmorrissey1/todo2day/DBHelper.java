@@ -29,7 +29,7 @@ class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate (SQLiteDatabase database){
         String table = "CREATE TABLE " + DATABASE_TABLE + "("
-                + KEY_FIELD_ID + " INTEGER PRIMARY KEY, "
+                + KEY_FIELD_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + FIELD_DESCRIPTION + " TEXT, "
                 + FIELD_IS_DONE + " INTEGER" + ")";
         database.execSQL (table);
@@ -47,7 +47,7 @@ class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(KEY_FIELD_ID, newTask.getId());
+        //values.put(KEY_FIELD_ID, newTask.getId());
         values.put(FIELD_DESCRIPTION, newTask.getDescription());
         values.put(FIELD_IS_DONE, newTask.getIsDone());
 
@@ -75,6 +75,17 @@ class DBHelper extends SQLiteOpenHelper {
         return taskList;
     }
 
+    public void updateTask(Task existingTask) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        //values.put(KEY_FIELD_ID, newTask.getId());
+        values.put(FIELD_DESCRIPTION, existingTask.getDescription());
+        values.put(FIELD_IS_DONE, existingTask.getIsDone());
+
+        db.update(DATABASE_TABLE, values, KEY_FIELD_ID + "=?", new String[] {String.valueOf(existingTask.getId())});
+    }
+
     public void deleteTask(Task taskToDelete) {
 
     }
@@ -83,8 +94,14 @@ class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public Task getTask(int id) {
+   /* public Task getTask(int id) {
         return new Task();
+    }*/
+
+    public void deleteAllTasks() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(DATABASE_TABLE, null, null);
+        db.close();
     }
 
 }
